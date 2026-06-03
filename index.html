@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="seanv2 - Premium Peak Performance Tracker">
+    <meta name="theme-color" content="#050507">
+    <link rel="manifest" href="manifest.json">
+    <title>seanv2 • Peak Life Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        :root {
+            --bg-dark: #050507;
+            --card-bg: rgba(20, 20, 25, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-border-hover: rgba(0, 113, 227, 0.35);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #6b7280;
+            --accent: #0071e3;
+            --accent-light: #00d4ff;
+            --accent-gradient: linear-gradient(135deg, #0071e3 0%, #00d4ff 100%);
+            --backdrop: blur(30px);
+            --glow: 0 12px 40px rgba(0, 113, 227, 0.15);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Ambient Premium Glows */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle at center, rgba(0, 113, 227, 0.12) 0%, transparent 65%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle at center, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 18s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.7; }
+            100% { transform: scale(1.15) translate(3%, 5%); opacity: 1; }
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Apple Navbar with Dynamic Blurring */
+        .navbar {
+            backdrop-filter: var(--backdrop);
+            -webkit-backdrop-filter: var(--backdrop);
+            background: rgba(5, 5, 7, 0.75);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 14px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 8px 14px;
+            border: none;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: var(--text-primary);
+            border-color: var(--accent);
+            box-shadow: 0 8px 20px rgba(0, 113, 227, 0.3);
+        }
+
+        /* Main Setup Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .section {
+            display: none;
+            animation: iosSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes iosSlideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glassmorphic Premium Cards */
+        .glass-card {
+            backdrop-filter: var(--backdrop);
+            -webkit-backdrop-filter: var(--backdrop);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--card-border-hover);
+            box-shadow: var(--glow);
+        }
+
+        /* Header Hero Card */
+        .hero-card {
+            background: linear-gradient(135deg, rgba(20, 20, 25, 0.8) 0%, rgba(10, 10, 12, 0.9) 100%);
+            border: 1px solid var(--card-border);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-card h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -1.2px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .hero-text {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.3px;
+        }
+
+        /* Grid Framework */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Numeric Stat Layout blocks */
+        .stat-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .stat {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stat .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat .value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* Premium Scannable Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .data-table th {
+            padding: 14px 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Unified Timeline Module */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 24px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -19px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .timeline-label {
+            font-weight: 700;
+            color: var(--accent-light);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        /* Generic Lists */
+        .vision-list, .list-style {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .vision-list li, .list-style li {
+            padding-left: 24px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+
+        .vision-list li::before, .list-style li::before {
+            content: '▫';
+            position: absolute;
+            left: 6px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .stat-detail {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+
+        .vision-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .vision-col {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.01);
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* TODAY STRUCTURAL TIMELINE CARDS */
+        .today-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .time-card {
+            position: relative;
+            backdrop-filter: var(--backdrop);
+            -webkit-backdrop-filter: var(--backdrop);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .time-card:hover {
+            border-color: var(--card-border-hover);
+            transform: translateX(4px);
+        }
+
+        /* Interactive Complete Phase Overlay Style */
+        .time-card.completed-task {
+            background: rgba(10, 25, 15, 0.35);
+            border-color: rgba(52, 211, 153, 0.3);
+            opacity: 0.65;
+        }
+
+        .time-card.completed-task .time, 
+        .time-card.completed-task .time-label,
+        .time-card.completed-task h3 {
+            text-decoration: line-through;
+            color: var(--text-tertiary);
+        }
+
+        .time-card .check-status {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .time-card.completed-task .check-status {
+            background: #34d399;
+            border-color: #34d399;
+        }
+
+        .time-card.completed-task .check-status::after {
+            content: '✓';
+            color: #000;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .time-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-right: 30px;
+        }
+
+        .time-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-light);
+            background: rgba(0, 113, 227, 0.15);
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .time {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .meal-macros {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .macro {
+            text-align: center;
+        }
+
+        .macro-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .macro-label {
+            font-size: 9px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .meal-items {
+            list-style: none;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .meal-item {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .meal-item::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        /* Specific blocks for Workouts & Academic sections */
+        .workout-inline-box, .academic-inline-box {
+            margin-top: 10px;
+            padding: 16px;
+            background: rgba(0, 113, 227, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 113, 227, 0.15);
+        }
+
+        .academic-inline-box {
+            background: rgba(139, 92, 246, 0.04);
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        .exercise-node, .chapter-node {
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .exercise-node:last-child, .chapter-node:last-child {
+            padding-bottom: 0;
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .node-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .node-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .science-note {
+            font-size: 11.5px;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* Premium Card Summary Dashboard */
+        .summary-card {
+            background: linear-gradient(135deg, rgba(20, 20, 25, 0.7) 0%, rgba(5, 5, 7, 0.9) 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .summary-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.01);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .summary-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent-light);
+        }
+
+        .summary-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Apple Device Responsiveness Optimization */
+        @media (max-width: 768px) {
+            .dashboard-grid, .vision-comparison {
+                grid-template-columns: 1fr;
+            }
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero-card h1 { font-size: 34px; }
+            .container { padding: 20px 16px; }
+            .glass-card { padding: 20px; }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 32px 24px;
+            color: var(--text-tertiary);
+            font-size: 12px;
+            border-top: 1px solid var(--card-border);
+            margin-top: 64px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Premium Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">seanv2</div>
+            <div class="nav-menu">
+                <button class="nav-btn active" onclick="showSection('dashboard', event)">Dashboard</button>
+                <button class="nav-btn" onclick="showSection('today', event)">Today</button>
+                <button class="nav-btn" onclick="showSection('fitness', event)">Fitness</button>
+                <button class="nav-btn" onclick="showSection('neet', event)">NEET</button>
+                <button class="nav-btn" onclick="showSection('vision', event)">Vision</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dynamic Application Container -->
+    <main class="container">
+        
+        <!-- DASHBOARD TAB -->
+        <section id="dashboard" class="section active">
+            <div class="hero-card">
+                <h1>seanv2</h1>
+                <p class="hero-subtitle">The Next Level Version of Sean</p>
+                <p class="hero-text">180-Day Transformation: July 1 • December 27, 2026</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="glass-card">
+                    <h2>💪 Fitness Transformation</h2>
+                    <div class="stat-box">
+                        <div class="stat"><span class="label">Current → Goal</span><span class="value">90kg → 72–74kg</span></div>
+                        <div class="stat"><span class="label">Body Fat</span><span class="value">40%+ → &lt;9.9%</span></div>
+                        <div class="stat"><span class="label">Timeline</span><span class="value">180 Days</span></div>
+                        <div class="stat"><span class="label">Daily Deficit</span><span class="value">1,536 kcal</span></div>
+                    </div>
+                    <p class="stat-detail">Protocol: SIT sprints, volume hypertrophy targets, absolute precision refeeding.</p>
+                </div>
+
+                <div class="glass-card">
+                    <h2>📚 NEET Mastery</h2>
+                    <div class="stat-box">
+                        <div class="stat"><span class="label">Target Score</span><span class="value">650+ / 720</span></div>
+                        <div class="stat"><span class="label">Core Focus</span><span class="value">Phy, Chem, Bio</span></div>
+                        <div class="stat"><span class="label">Exam Window</span><span class="value">Early Sept 2026</span></div>
+                        <div class="stat"><span class="label">Methodology</span><span class="value">Dual-Pass System</span></div>
+                    </div>
+                    <p class="stat-detail">Spaced repetition matrix tracking. Cross-referencing active recall loops daily.</p>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>🏆 Target Avatar Identity</h2>
+                <ul class="vision-list">
+                    <li><strong>Academic Status:</strong> Government Medical College Student</li>
+                    <li><strong>Physique Threshold:</strong> Highly Defined, Low Single-Digit Body Fat</li>
+                    <li><strong>Academics:</strong> Score Locked (650+ Metric Cleared)</li>
+                    <li><strong>Asset Lifestyle:</strong> Royal Enfield Meteor 650 Cruiser</li>
+                    <li><strong>Core Philosophy:</strong> Pure Unwavering Execution over Motivation</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- CHRONOLOGICAL TODAY TAB -->
+        <section id="today" class="section">
+            <div class="hero-card" style="padding: 24px; margin-bottom: 24px;">
+                <h1 style="font-size: 32px; margin-bottom: 4px;">Today's Blueprint</h1>
+                <p class="hero-subtitle">Chronological Performance Timeline • Tap cards to toggle completion</p>
+            </div>
+
+            <div class="summary-card">
+                <h2>📊 Daily Nutrition Blueprint</h2>
+                <div class="summary-grid">
+                    <div class="summary-item"><div class="summary-value">1,536</div><div class="summary-label">Calories</div></div>
+                    <div class="summary-item"><div class="summary-value">140g</div><div class="summary-label">Protein</div></div>
+                    <div class="summary-item"><div class="summary-value">137g</div><div class="summary-label">Carbs</div></div>
+                    <div class="summary-item"><div class="summary-value">48g</div><div class="summary-label">Fats</div></div>
+                </div>
+            </div>
+
+            <div class="today-timeline">
+                
+                <!-- 06:00 AM Block -->
+                <div class="time-card" id="task-0600" onclick="toggleTask('task-0600')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">CNS Reset & Hydration</span>
+                        <span class="time">06:00 AM</span>
+                    </div>
+                    <h3>🌅 Early Morning Hydration Protocol & HRV Check</h3>
+                    <ul class="meal-items">
+                        <li class="meal-item">Plain water (500ml) + Pinch of Pink Himalayan Salt + ½ lemon squeezed</li>
+                        <li class="meal-item">Execute waking RHR / HRV check to establish nervous system recovery baseline status</li>
+                    </ul>
+                    <p class="science-note">🔬 <strong>CNS Bio-Signaling:</strong> Hydration manages immediate morning cortisol surges. Sodium maintains plasma osmolarity perfectly without activating insulin responses.</p>
+                </div>
+
+                <!-- 07:30 AM Block -->
+                <div class="time-card" id="task-0730" onclick="toggleTask('task-0730')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Meal 1</span>
+                        <span class="time">07:30 AM</span>
+                    </div>
+                    <h3>🍳 Breakfast • The Yolk Law</h3>
+                    <ul class="meal-items">
+                        <li class="meal-item">3 Whole Eggs (Boiled)</li>
+                        <li class="meal-item">40g Hydrated Soya Chunks</li>
+                        <li class="meal-item">40g Oats cooked strictly in water</li>
+                        <li class="meal-item">15g Raw Pumpkin Seeds + Clean Black Coffee</li>
+                    </ul>
+                    <div class="meal-macros">
+                        <div class="macro"><div class="macro-value">42g</div><div class="macro-label">P</div></div>
+                        <div class="macro"><div class="macro-value">22g</div><div class="macro-label">F</div></div>
+                        <div class="macro"><div class="macro-value">38g</div><div class="macro-label">C</div></div>
+                        <div class="macro"><div class="macro-value">487</div><div class="macro-label">kcal</div></div>
+                    </div>
+                    <p class="science-note">🔬 <strong>CNS Bio-Signaling:</strong> Cholesterol supports endocrine pathways and testosterone production. Choline enhances cognitive clarity. Coffee blocks adenosine receptors for an optimized studying mindset.</p>
+                </div>
+
+                <!-- 01:00 PM Block -->
+                <div class="time-card" id="task-1300" onclick="toggleTask('task-1300')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Meal 2</span>
+                        <span class="time">01:00 PM</span>
+                    </div>
+                    <h3>🍛 Lunch • Glycemic Stability Control</h3>
+                    <ul class="meal-items">
+                        <li class="meal-item">Thick Dal (140g cooked) + 40g Soya Chunks (stir-fried)</li>
+                        <li class="meal-item">60g White Rice OR 2 standard Rotis</li>
+                        <li class="meal-item">1 tsp Pure Mustard Oil + Mixed Green Salad bowl</li>
+                    </ul>
+                    <div class="meal-macros">
+                        <div class="macro"><div class="macro-value">28g</div><div class="macro-label">P</div></div>
+                        <div class="macro"><div class="macro-value">6g</div><div class="macro-label">F</div></div>
+                        <div class="macro"><div class="macro-value">55g</div><div class="macro-label">C</div></div>
+                        <div class="macro"><div class="macro-value">399</div><div class="macro-label">kcal</div></div>
+                    </div>
+                    <p class="science-note">🔬 <strong>CNS Bio-Signaling:</strong> Steady low-glycemic curve blocks afternoon brain fog. Mustard oil provides clean fat substrates for overall cellular health.</p>
+                </div>
+
+                <!-- 05:30 PM Block -->
+                <div class="time-card" id="task-1730" onclick="toggleTask('task-1730')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Pre-Workout Fuel</span>
+                        <span class="time">05:30 PM</span>
+                    </div>
+                    <h3>⚡ CNS Engine Primer</h3>
+                    <ul class="meal-items">
+                        <li class="meal-item">Strong Clean Black Coffee (200ml)</li>
+                        <li class="meal-item">1 Medium Banana (120g for glycogen replenishment)</li>
+                        <li class="meal-item">Intra-workout hydration fluid prep: Water + Pink Himalayan Salt</li>
+                    </ul>
+                    <div class="meal-macros">
+                        <div class="macro"><div class="macro-value">1g</div><div class="macro-label">P</div></div>
+                        <div class="macro"><div class="macro-value">0g</div><div class="macro-label">F</div></div>
+                        <div class="macro"><div class="macro-value">27g</div><div class="macro-label">C</div></div>
+                        <div class="macro"><div class="macro-value">112</div><div class="macro-label">kcal</div></div>
+                    </div>
+                </div>
+
+                <!-- 06:00 PM - 07:00 PM Block -->
+                <div class="time-card" id="task-1800" onclick="toggleTask('task-1800')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Hypertrophy Training</span>
+                        <span class="time">06:00 PM - 07:00 PM</span>
+                    </div>
+                    <h3>🏋️ Workout A: Push & Delt Hypertrophy Engine</h3>
+                    
+                    <div class="workout-inline-box">
+                        <div class="exercise-node">
+                            <div class="node-title">1. Incline Dumbbell Press (Rest-Pause Cluster)</div>
+                            <div class="node-desc">1 Cluster (6+2+1 reps) followed by 3 sets x 6-8 reps. Target Load: 28kg DBs. Tempo: 3s down, explosive upward drive. Finisher: 30s loaded stretch at bottom.</div>
+                        </div>
+                        <div class="exercise-node">
+                            <div class="node-title">2. Seated Overhead Dumbbell Press</div>
+                            <div class="node-desc">3 sets x 8-12 reps with 20kg DBs. Keep core absolutely braced to eliminate lumbar over-arching.</div>
+                        </div>
+                        <div class="exercise-node">
+                            <div class="node-title">3. Incline Dumbbell Flyes</div>
+                            <div class="node-desc">3 sets x 10-12 reps with 14kg DBs. Keep constant tension with deep outer stretch mechanics.</div>
+                        </div>
+                        <div class="exercise-node">
+                            <div class="node-title">4. Cable Lateral Raises (Burnout Matrix)</div>
+                            <div class="node-desc">5 sets x 12-15 reps with 5-7kg load. Emphasize pushing outward with 2s peak mechanical holds.</div>
+                        </div>
+                        <div class="exercise-node">
+                            <div class="node-title">5. Tricep Overhead Cable Extensions</div>
+                            <div class="node-desc">3 sets x 10-15 reps with 12kg stack. Focus completely on stretching the long-head tricep fibers.</div>
+                        </div>
+                    </div>
+                    <p class="science-note">🔬 <strong>Biomechanical Insight:</strong> Hand/Palm cooling mechanics between cluster sets increases overall workout volume. Salt-infused intra hydration fluid safeguards blood pressure and prevents intra-set performance dips.</p>
+                </div>
+
+                <!-- 07:00 PM Block -->
+                <div class="time-card" id="task-1900" onclick="toggleTask('task-1900')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Meal 3</span>
+                        <span class="time">07:00 PM</span>
+                    </div>
+                    <h3>💪 Post-Workout • Anabolic MPS Recovery Window</h3>
+                    <ul class="meal-items">
+                        <li class="meal-item">1 Scoop Whey Protein Isolate (25g Lean Yield)</li>
+                        <li class="meal-item">3 Large Boiled Egg Whites</li>
+                        <li class="meal-item">400ml Cold Water</li>
+                    </ul>
+                    <div class="meal-macros">
+                        <div class="macro"><div class="macro-value">36g</div><div class="macro-label">P</div></div>
+                        <div class="macro"><div class="macro-value">0g</div><div class="macro-label">F</div></div>
+                        <div class="macro"><div class="macro-value">2g</div><div class="macro-label">C</div></div>
+                        <div class="macro"><div class="macro-value">152</div><div class="macro-label">kcal</div></div>
+                    </div>
+                    <p class="science-note">🔬 <strong>CNS Bio-Signaling:</strong> Immediate amino saturation spikes muscle protein synthesis (MPS) over the target muscular groups via mTOR pathways.</p>
+                </div>
+
+                <!-- 08:30 PM Block -->
+                <div class="time-card" id="task-2030" onclick="toggleTask('task-2030')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Meal 4</span>
+                        <span class="time">08:30 PM</span>
+                    </div>
+                    <h3>🌙 Dinner • Somatotropic Sleep Foundation</h3>
+                    <ul class="meal-items">
+                        <li class="meal-item">100g Low-Fat Paneer OR Shredded Chicken Breast</li>
+                        <li class="meal-item">240g Large bowl of steamed spinach</li>
+                        <li class="meal-item">5g Ashwagandha Powder mixed in warm water or milk alternative</li>
+                    </ul>
+                    <div class="meal-macros">
+                        <div class="macro"><div class="macro-value">32g</div><div class="macro-label">P</div></div>
+                        <div class="macro"><div class="macro-value">20g</div><div class="macro-label">F</div></div>
+                        <div class="macro"><div class="macro-value">15g</div><div class="macro-label">C</div></div>
+                        <div class="macro"><div class="macro-value">386</div><div class="macro-label">kcal</div></div>
+                    </div>
+                </div>
+
+                <!-- 08:45 PM - 11:15 PM Block -->
+                <div class="time-card" id="task-2045" onclick="toggleTask('task-2045')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Academic Lock-In</span>
+                        <span class="time">08:45 PM - 11:15 PM</span>
+                    </div>
+                    <h3>📚 Intensive NEET Study Engine (150 Minutes Block)</h3>
+                    
+                    <div class="academic-inline-box">
+                        <div class="chapter-node">
+                            <div class="node-title">⚛️ PHYSICS (90 Mins) — Revision Pass</div>
+                            <div class="node-desc"><strong>Core focus:</strong> Electrostatics + Current Electricity (Parts 1-2). <br><strong>Method:</strong> Active whiteboard recall, skip passive re-reading. Solve a minimum of 20 high-yield numerical problems via practice banks.</div>
+                        </div>
+                        <div class="chapter-node">
+                            <div class="node-title">🧪 CHEMISTRY (30 Mins) — Learning Pass</div>
+                            <div class="node-desc"><strong>Core focus:</strong> Hydrogen & S-Block Elements (Part 1). <br><strong>Method:</strong> First exposure parsing. Create precise handwritten structural map files detailing 8-10 essential core chemical reactions.</div>
+                        </div>
+                        <div class="chapter-node">
+                            <div class="node-title">🧬 BIOLOGY (30 Mins) — Learning Pass</div>
+                            <div class="node-desc"><strong>Core focus:</strong> Photosynthesis in Higher Plants. <br><strong>Method:</strong> Concept flow mapping. Isolate and pin detailed physiological electron transport mechanisms into long term memory matrices.</div>
+                        </div>
+                    </div>
+                    <p class="science-note">🧠 <strong>Neuro-Cognitive Mastery:</strong> Utilizing a dual-pass structured schedule. Physics serves as a highly intense Spaced Repetition Pass 2 execution block. Chemistry & Biology introduce Pass 1 structural encoding. Ashwagandha suppresses stress hormones to optimize memory filing.</p>
+                </div>
+
+                <!-- 11:15 PM - 11:45 PM Block -->
+                <div class="time-card" id="task-2315" onclick="toggleTask('task-2315')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Down-Regulation</span>
+                        <span class="time">11:15 PM - 11:45 PM</span>
+                    </div>
+                    <h3>🌙 Pre-Sleep Recovery Protocols</h3>
+                    <ul class="meal-items">
+                        <li class="meal-item"><strong>Screen Blackout:</strong> Absolute cutoff of all blue-light radiating devices to trigger native melatonin production.</li>
+                        <li class="meal-item"><strong>Thermal Shift:</strong> 3-5 minute cool shower (18-20°C) to accelerate core temperature drops.</li>
+                        <li class="meal-item"><strong>Parasympathetic Activation:</strong> 10 minutes of structural mobility drills (Couch stretch, child's pose).</li>
+                        <li class="meal-item"><strong>GABA Supplementation:</strong> 300mg Magnesium Glycinate mixed cleanly in warm water.</li>
+                    </ul>
+                </div>
+
+                <!-- 11:45 PM - 06:00 AM Block -->
+                <div class="time-card" id="task-2345" onclick="toggleTask('task-2345')">
+                    <div class="check-status"></div>
+                    <div class="time-header">
+                        <span class="time-label">Anabolic Sleep Window</span>
+                        <span class="time">11:45 PM - 06:00 AM</span>
+                    </div>
+                    <h3>💤 Core Sleep Architecture (6h 15min Recovery Phase)</h3>
+                    <ul class="meal-items">
+                        <li class="meal-item">Protect deep slow-wave sleep phases to drive systemic human growth hormone distribution.</li>
+                        <li class="meal-item">Uninterrupted REM phases consolidate the 150 minutes of intensive evening NEET learning.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FITNESS PROTOCOL TAB -->
+        <section id="fitness" class="section">
+            <h1>Fitness Protocol: seanv2 v2.0</h1>
+            <p class="section-subtitle">Complete 180-Day Transformation Blueprint</p>
+
+            <div class="glass-card">
+                <h2>📊 Biometric Parameters Tracking</h2>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Biometric Factor</th><th>Baseline Metric</th><th>Target Goal</th><th>System Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Age Parameter</td><td>18 Years Old</td><td>18 Years Old</td><td>Active Recomp Phase</td></tr>
+                            <tr><td>Stature Height</td><td>5'8" (172.7 cm)</td><td>172.7 cm</td><td>Spinal Decompression Active</td></tr>
+                            <tr><td>Body Mass</td><td>90.0 kg</td><td>72.0 – 74.0 kg</td><td>Daily Tracking Compulsory</td></tr>
+                            <tr><td>Body Fat %</td><td>40%+ Tracked</td><td>&lt; 9.9% Threshold</td><td>Fat Oxidation Active</td></tr>
+                            <tr><td>Gynecomastia Profile</td><td>Protruding Gland Mass</td><td>Flattened Upper Chest Shelf</td><td>Incline Trajectory Focus</td></tr>
+                            <tr><td>Anterior Pelvic Tilt</td><td>Severe Anterior Dump</td><td>Absolute Neutral Pelvis</td><td>Daily Couch Stretch Mandate</td></tr>
+                            <tr><td>Forward Head Posture</td><td>Cervical Shift Distortion</td><td>Vertical Axis Alignment</td><td>Wall Angel Interventions</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>🍽️ Macronutrient Assignment Engine (1,536 kcal)</h2>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Target Variable</th><th>Yield Target</th><th>Primary Biological Mechanism</th><th>Optimal Timing Block</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Total Energy</td><td>1,536 kcal</td><td>Aggressive safe caloric deficit induction</td><td>24-Hour Matrix Control</td></tr>
+                            <tr><td>Protein Target</td><td>140 g</td><td>Maximize baseline nitrogen retention & MPS</td><td>Post-workout window load</td></tr>
+                            <tr><td>Lipid Target</td><td>48 g</td><td>Safeguard testosterone baseline generation</td><td>Fasted operational hours</td></tr>
+                            <tr><td>Carbohydrate Target</td><td>137 g</td><td>GLUT-4 channel recovery and fuel</td><td>Post-training window load</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>180-Day Periodization Matrix</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-label">Phase 1: Neural Reset Foundation</span>
+                        <p><strong>Days 1–60 (Jul 01–Aug 29)</strong><br>Establish metabolic adaptation, SIT breathing techniques, postural adjustments, and clear tracking parameters.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-label">Phase 2: Progressive Hypertrophic Overload</span>
+                        <p><strong>Days 61–120 (Aug 30–Oct 28)</strong><br>Drive mechanical muscle load, lean retention optimizations, and deep tracking metrics.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-label">Phase 3: Deep Metabolic Shred Phase</span>
+                        <p><strong>Days 121–180 (Oct 29–Dec 27)</strong><br>Peak fat oxidation windows, maximized SIT density, drop into single-digit body fat levels.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEET SYLLABUS TAB -->
+        <section id="neet" class="section">
+            <h1>NEET Matrix: Spaced Repetition Syllabus Tracker</h1>
+            <p class="section-subtitle">Syllabus breakdown mapped over structural dual-pass loops</p>
+
+            <div class="glass-card">
+                <h2>Physics Map Matrix</h2>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Syllabus Block</th><th>Chapters Included</th><th>Pass 1 Target Window</th><th>Pass 2 Revision Window</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Mechanics Engine</td><td>Kinematics, Laws of Motion, Work Energy, Rotational Systems</td><td>Jun 20 - Jul 15</td><td>Oct 1 - Oct 20</td></tr>
+                            <tr><td>Thermal Engineering</td><td>Thermal Parameters, Laws of Thermodynamics, Kinetic Theory</td><td>Jul 16 - Jul 30</td><td>Oct 21 - Oct 28</td></tr>
+                            <tr><td>Electromagnetism</td><td>Electrostatics, Current, Magnetism, EM Induction, AC Flow</td><td>Jul 31 - Aug 25</td><td>Oct 29 - Nov 10</td></tr>
+                            <tr><td>Optics & Quantum Physics</td><td>Wave/Ray Optics, Atomic Structure, Semiconductors</td><td>Aug 26 - Sep 15</td><td>Nov 11 - Nov 25</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>Chemistry Map Matrix</h2>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Syllabus Block</th><th>Core Target Chapters</th><th>Pass 1 Target Window</th><th>Reaction Control Needs</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Physical Track</td><td>Atomic Scale, Structural Bonding, Thermodynamics, Kinetics</td><td>Jun 20 - Jul 20</td><td>25+ core equations</td></tr>
+                            <tr><td>Inorganic Track</td><td>Periodic Trends, Coordination Compounds, s/p/d/f Block Blocks</td><td>Jul 21 - Aug 30</td><td>18+ structural trends</td></tr>
+                            <tr><td>Organic Track</td><td>Isomerism, Reaction Mechanisms, Substitution, Aromatic Matrix</td><td>Aug 31 - Sep 20</td><td>15+ core mechanisms</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>Biology Map Matrix</h2>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Syllabus Block</th><th>Core System Topics</th><th>Pass 1 Target Window</th><th>Required Mapping Depth</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Cell Systems</td><td>Cell Architecture, Division, Plant Respiration, Photosynthesis</td><td>Jun 20 - Jul 15</td><td>Deep enzymatic level</td></tr>
+                            <tr><td>Genetics & Heredity</td><td>Molecular Basis of Inheritance, Mutation Systems, Evolution</td><td>Jul 16 - Aug 10</td><td>Full transcription mapping</td></tr>
+                            <tr><td>Human Physiology</td><td>Neural Transmission, Cardiac Cycles, Endocrine Controls</td><td>Aug 11 - Sep 15</td><td>Systemic integration level</td></tr>
+                            <tr><td>Ecology Framework</td><td>Ecosystem Balances, Population Networks, Biodiverse Profiles</td><td>Sep 16 - Sep 30</td><td>Macro concept execution</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISION TAB -->
+        <section id="vision" class="section">
+            <h1>The seanv2 Vision Matrix</h1>
+            <p class="section-subtitle">The standard of life engineered over 180 days</p>
+
+            <div class="glass-card">
+                <h2>🏆 Structural Avatar Shift: Sean → seanv2</h2>
+                <div class="vision-comparison">
+                    <div class="vision-col">
+                        <h3>Sean (Day 0 Baseline)</h3>
+                        <ul class="list-style">
+                            <li>90kg body mass tracking high fat levels</li>
+                            <li>Postural limitations (Severe APT, FHP, Chest distortion)</li>
+                            <li>Initial phase NEET academic preparation tracking</li>
+                            <li>Habit patterns needing strict consistency control</li>
+                        </ul>
+                    </div>
+                    <div class="vision-col">
+                        <h3>seanv2 (Day 180 Target)</h3>
+                        <ul class="list-style">
+                            <li>72–74kg scale mass, single digit body fat control</li>
+                            <li>Perfect kinetic chain posture alignment and core presence</li>
+                            <li>NEET Score Cleared (650+ GMC Seat Secured)</li>
+                            <li>Uncompromising execution regardless of motivation indicators</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>🏍️ The Meteor 650 Lifestyle Metric</h2>
+                <p>The Royal Enfield Meteor 650 Cruiser represents the lifestyle framework reward for structural excellence:</p>
+                <ul class="vision-list">
+                    <li><strong>Freedom:</strong> Autonomy bought through rigorous, non-negotiable self-mastery.</li>
+                    <li><strong>Engineering:</strong> Respecting structured physical design parameters (Mind, Body, Machine).</li>
+                    <li><strong>Presence:</strong> High-speed cognitive flow state, mimicking intensive study and workout execution blocks.</li>
+                </ul>
+            </div>
+
+            <div class="glass-card">
+                <h2>📅 Milestone Architecture</h2>
+                <div class="timeline">
+                    <div class="timeline-item"><span class="timeline-label">Week 8 Checkpoint</span><p>NEET parameters solid. Simulated mock parameters clearing 650 benchmarks accurately.</p></div>
+                    <div class="timeline-item"><span class="timeline-label">Week 12 Checkpoint</span><p>Weight threshold hits 80kg. Vascular indicators visible across arms and deltoids.</p></div>
+                    <div class="timeline-item"><span class="timeline-label">Month 4 Checkpoint</span><p>GMC academic transition integrated. Core single-digit body fat profiles tracking close.</p></div>
+                    <div class="timeline-item"><span class="timeline-label">Month 6 Target Completion 🏁</span><p>Full seanv2 manifestation. 72-74kg weight locked. Single-digit fat profile established. Medical path open.</p></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- App Footer -->
+    <footer class="footer">
+        <p>seanv2 Engine • Engineered for Peak Human Recomposition</p>
+        <p style="color: var(--text-tertiary); font-size: 11px; margin-top: 6px;">Powered by Dark Acrylic Glassmorphism Architecture</p>
+    </footer>
+
+    <script>
+        // Smooth Section Switching
+        function showSection(sectionId, event) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => btn.classList.remove('active'));
+
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Handle startup routing
+                const targetBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => btn.getAttribute('onclick').includes(sectionId));
+                if (targetBtn) targetBtn.classList.add('active');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Interactive Checkbox System with LocalStorage Persistence
+        function toggleTask(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.toggle('completed-task');
+                const isCompleted = element.classList.contains('completed-task');
+                localStorage.setItem(`seanv2_task_${id}`, isCompleted ? 'true' : 'false');
+            }
+        }
+
+        function loadTaskStates() {
+            const tasks = ['task-0600', 'task-0730', 'task-1300', 'task-1730', 'task-1800', 'task-1900', 'task-2030', 'task-2045', 'task-2315', 'task-2345'];
+            tasks.forEach(id => {
+                const state = localStorage.getItem(`seanv2_task_${id}`);
+                const element = document.getElementById(id);
+                if (element && state === 'true') {
+                    element.classList.add('completed-task');
+                }
+            });
+        }
+
+        // Handle deep PWA startup deep links via URL hashes
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTaskStates();
+            const hash = window.location.hash.replace('#', '');
+            if (['dashboard', 'today', 'fitness', 'neet', 'vision'].includes(hash)) {
+                showSection(hash);
+            }
+        });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {
+                console.log('PWA Service Worker running locally.');
+            });
+        }
+    </script>
+</body>
+</html>
